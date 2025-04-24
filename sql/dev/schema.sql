@@ -1,5 +1,5 @@
-CREATE TABLE IF NOT EXISTS Materials (
-    Serial VARCHAR(4),
-    Item_name VARCHAR(50),
-    Item_id VARCHAR(2)
+CREATE TABLE IF NOT EXISTS materials (
+    item_id SERIAL PRIMARY KEY,
+    item_name VARCHAR(50),
+    description VARCHAR(50)
 );

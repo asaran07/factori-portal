@@ -23,4 +23,5 @@ reset:
 # but the basic idea is to run: "make run-dev script=dev/my_script.sql"
 # that command will (hopefully) run the sql script specified using "sript="
 run-dev:
-	docker exec -i factori-db psql -U postgres -d factori-db -f /docker-entrypoint-initdb.d/${script}
+	@echo "Running script: ${script}"
+	docker exec -i factori-db psql -U postgres -d factori-db < ${script}
