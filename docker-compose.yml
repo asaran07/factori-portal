@@ -2,14 +2,17 @@ version: "3.8"
 
 services:
   db:
-    image: postgres:14
-    container_name: factori_db
+    image: postgres:17
+    container_name: factori-db
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: arsh
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: factori
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: factori-db
     volumes:
-      - ./sql/bootstrap.sql:/docker-entrypoint-initdb.d/bootstrap.sql
-    restart: unless-stopped
+      - postgres-data:/var/lib/postgresql/data
+      - ./sql/bootstrap.sql:/docker-entrypoint-initdb.d/bootstrap.sql:ro
+
+volumes:
+  postgres-data:
