@@ -1,8 +1,13 @@
 # docker helper commands
+# NOTE: MAKE SURE TO RUN MAKE COMMANDS FROM THE ROOT DIRECTORY OR IT WONT WORK
+
+DB_CONTAINER=factori-db
+DB_USER=postgres
+DB_NAME=factori-db
 
 # go into a psql shell inside the container
 psql:
-	docker exec -it factori-db psql -U postgres -d factori-db
+	docker exec -it $(DB_CONTAINER) psql -U $(DB_USER) -d $(DB_NAME)
 
 up:
 	docker compose up -d
@@ -11,7 +16,7 @@ down:
 	docker compose down
 
 logs:
-	docker logs -f factori-db
+	docker logs -f $(DB_CONTAINER)
 
 # wipe and bring up containers again
 reset:
@@ -24,4 +29,4 @@ reset:
 # that command will (hopefully) run the sql script specified using "sript="
 run-dev:
 	@echo "Running script: ${script}"
-	docker exec -i factori-db psql -U postgres -d factori-db < ${script}
+	cat ${script} | docker exec -i $(DB_CONTAINER) psql -U $(DB_USER) -d $(DB_NAME)
