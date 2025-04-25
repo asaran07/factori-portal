@@ -30,3 +30,14 @@ reset:
 run-dev:
 	@echo "Running script: ${script}"
 	cat ${script} | docker exec -i $(DB_CONTAINER) psql -U $(DB_USER) -d $(DB_NAME)
+
+# run all *.sql in sql/dev
+run-dev-all:
+	@echo "Running all scripts in dev..."
+	@for f in $(shell find sql/dev -type f -name '*.sql' | sort); do \
+		echo "⮕ $$f"; \
+		cat $$f | docker exec -i $(DB_CONTAINER) \
+			psql -U $(DB_USER) -d $(DB_NAME); \
+	done
+	@echo "finished"
+
