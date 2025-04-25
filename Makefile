@@ -41,3 +41,16 @@ run-dev-all:
 	done
 	@echo "finished"
 
+# given a common directory and a string parsable as a list of (space separated) sql files, inserts the common directory to all sql files and runs them
+# e.g. make run-dev-scripts scripts="01_schema.sql 02_insert_materials.sql 03_insert_material_attributes.sql" common_dir="./sql/dev"
+# will first run /sql/dev/01_schema.sql, then the second, and so on
+run-dev-scripts:
+	@for script in $(scripts); do \
+		if [[ "$$script" == */* ]]; then \
+            script_path="$$script"; \
+        else \
+            script_path="$(common_dir)/$$script"; \
+        fi; \
+        echo "Running script: $$script_path"; \
+        cat $$script_path | docker exec -i $(DB_CONTAINER) psql -U $(DB_USER) -d $(DB_NAME); \
+    done
