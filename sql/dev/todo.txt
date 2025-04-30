@@ -1,4 +1,0 @@
-- create a sql file for inserting 10 mock data items into the materials table
-- also create another sql file for inserting mock data items into the materials attributes table, 
-  this should make sense with the other one.
-- write sql for making the attribute definition table in the schema.sql file
