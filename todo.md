@@ -15,7 +15,10 @@ Add default values like TIMESTAMP DEFAULT now() or quantity DEFAULT 0.
 Go through all fields and make sure the NULL values are okay.
 
 - Comments.
-Add comments to both files.
+Add comments to all `CREATE TABLE` commands in the schema file.
+Also properly explain the point of that table and how
+it will be used.
+Add comments to test_populate file.
 
 - Single SQL file (final).
 Add everything to single SQL file after all parts are done.
