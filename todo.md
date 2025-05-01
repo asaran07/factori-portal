@@ -1,26 +1,26 @@
 # TO-DO Board for Phase 2 - Group 11
 
-## Part A (DDL/Schema)
+## Part A (DDL/Schema) [ARSH]
 
-- Every foreign key must have an ON DELETE/ON UPDATE clause.
+- Every foreign key must have an ON DELETE/ON UPDATE clause. [ARSH]
 None of our foreign keys have them so we need to add this.
 
-- \>= 4 check constraints
+- \>= 4 check constraints [ARSH]
 We need to have at least 4 check constraints, we have 0 right now.
 
-- \>= 4 default values.
+- \>= 4 default values. [ARSH]
 Add default values like TIMESTAMP DEFAULT now() or quantity DEFAULT 0.
 
 - NOT NULL cleanup.
 Go through all fields and make sure the NULL values are okay.
 
-- Comments.
+- Comments. [ARSH]
 Add comments to all `CREATE TABLE` commands in the schema file.
 Also properly explain the point of that table and how
 it will be used.
 Add comments to test_populate file.
 
-- Single SQL file (final).
+- Single SQL file (final). [ARSH]
 Add everything to single SQL file after all parts are done.
 
 ## Part B (Sample Data)
