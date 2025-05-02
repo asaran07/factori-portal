@@ -32,8 +32,11 @@ Requirement: \>= 10 tuples per table with realistic values.
 - attribute_definition OK.
 - If needed, add rows to item_attribute table to match others.
 
-- Add *10* tuples/sample data rows to
-**locations**, **suppliers**, **inventory_transactions**, **inventory**, and **inventory_records**.
+- Add *10* tuples/sample data rows to `locations`
+- Add *10* tuples/sample data rows to `suppliers`
+- Add *10* tuples/sample data rows to `inventory_transactions`
+- Add *10* tuples/sample data rows to `inventory`
+- Add *10* tuples/sample data rows to `inventory_records`
 
 ## Part C (Queries)
 
