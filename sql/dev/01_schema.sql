@@ -74,47 +74,79 @@ CREATE TABLE IF NOT EXISTS item_attributes (
 
 -- everything past here is identical for every idea
 
-
+-- this table is like an index for all the locations
+-- that currently exist in the factory/inventory.
 CREATE TABLE IF NOT EXISTS locations (
     location_id SERIAL PRIMARY KEY,
-    location_name VARCHAR(50),
+    location_name VARCHAR(50) NOT NULL UNIQUE,
     location_description VARCHAR(50)
+    CHECK (char_length(location_name) > 0)
+    -- we can maybe add a 'default' location later.
 );
 
-
+-- this table is like an index for all the known suppliers.
 CREATE TABLE IF NOT EXISTS suppliers (
     supplier_id SERIAL PRIMARY KEY,
-    supplier_name VARCHAR(50) NOT NULL
+    supplier_name VARCHAR(50) NOT NULL UNIQUE
+    CHECK (char_length(supplier_name) > 0)
 );
 
+-- the records table for storing the transactions of when,
+-- and from where the items were bought or removed from the
+-- main factory/inventory itself.
 CREATE TABLE IF NOT EXISTS inventory_transactions (
     transaction_id SERIAL PRIMARY KEY,
-    item_id INT,
+    item_id INT NOT NULL,
     location_id INT,
-    quantity FLOAT,
+    quantity FLOAT NOT NULL,
     transaction_description VARCHAR(50),
-    supplier_id INT,
-    FOREIGN KEY (item_id) REFERENCES items (item_id),
-    FOREIGN KEY (location_id) REFERENCES locations (location_id), --probably nullable
-    FOREIGN KEY (supplier_id) REFERENCES suppliers (supplier_id) -- CAN be null, not all transactions do this
+    supplier_id INT
+    CHECK (quantity >= 0),
+    -- restrict item deletion because we wanna preserve records (for now).
+    FOREIGN KEY (item_id) REFERENCES items (item_id)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (location_id) REFERENCES
+    locations (location_id) --probably nullable
+    -- set locations to NULL if location is deleted for now.
+    ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (supplier_id) REFERENCES
+    -- same for supplier
+    suppliers (supplier_id) -- CAN be null, not all transactions do this
+    ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- only exists because we may want to have counts per item per location
+-- this is basically the index/count for all items across locations (i think).
 CREATE TABLE IF NOT EXISTS inventory (
     inventory_id SERIAL PRIMARY KEY,
-    item_id INT, 
+    item_id INT NOT NULL,
     location_id INT,
-    quantity FLOAT,
-    FOREIGN KEY (item_id) REFERENCES items (item_id),
+    quantity FLOAT NOT NULL
+
+    CHECK (quantity >= 0),
+
+    FOREIGN KEY (item_id) REFERENCES items (item_id)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
+    -- restrict to avoid accidental deletion.
     FOREIGN KEY (location_id) REFERENCES locations (location_id)
+    ON DELETE SET NULL ON UPDATE CASCADE
+    -- on delete set null for locations to allow
+    -- location deletion while keeping records.
+    -- we can handle unassigned items in-app.
 );
 
+
+-- the 'transactions' record table for when items were taken
+-- and put into different inventory loactions.
 CREATE TABLE IF NOT EXISTS inventory_records (
     record_id SERIAL PRIMARY KEY,
-    item_id INT,
-    location_id INT,
-    quantity FLOAT,
-    date_of_count TIMESTAMP,
-    FOREIGN KEY (item_id) REFERENCES items (item_id),
+    item_id INT NOT NULL,
+    location_id INT NOT NULL,
+    quantity FLOAT NOT NULL,
+    date_of_count TIMESTAMP DEFAULT now()
+    CHECK (quantity >= 0),
+    FOREIGN KEY (item_id) REFERENCES items (item_id)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (location_id) REFERENCES locations (location_id)
+    ON DELETE RESTRICT ON UPDATE CASCADE
 );
