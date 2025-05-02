@@ -145,5 +145,8 @@ INSERT INTO item_attributes (item_id, definition_id, attribute_value, unit_id) V
   (3, 5, '1.00', 2),
   -- Copper Wire
   (4, 4, '10', 1),
-  (4, 5, '12', 11);
+  (4, 5, '12', 11),
+  -- Glass Pane
+  (7, 1, '10', 1),
+  (7, 2, '8', 1);
 -- TESTTTIHJGGTGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
