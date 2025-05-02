@@ -1,4 +1,5 @@
 
+--queries do not currently conform to phase 2 requirements, but they do to week 3 requirements
 
 --SQL Query 1: Computes a join of at least three tables (must use JOIN ON)
 -- select everything in item_attributes and replace the foreign keys with the corresponding names in the other tables
@@ -60,6 +61,7 @@ FROM
   items i
 FULL JOIN item_attributes ia ON i.item_id = ia.item_id
 GROUP BY i.item_id, i.item_name
+HAVING COUNT(ia.definition_id) > 0
 ORDER BY num_attributes DESC;
 
 --SQL Query 5: Uses nested queries with any of the set operations UNION, EXCEPT, or INTERSECT*
