@@ -1,8 +1,12 @@
 -- like a "catalog" of all items that can exist in a factory/inventory.
 CREATE TABLE IF NOT EXISTS items (
     item_id SERIAL PRIMARY KEY,
-    item_name VARCHAR(50) NOT NULL,
-    description VARCHAR(50)
+    -- we probably won't have same exact item name for two items, so unique.
+    item_name VARCHAR(50) NOT NULL UNIQUE,
+    -- maybe we should make this text? or increase to VARCHAR(255)?
+    description VARCHAR(50),
+    created_at TIMESTAMP DEFAULT now(),
+    updated_at TIMESTAMP DEFAULT now()
 );
 
 -- table for the general category of a unit an attribute can have.
@@ -19,7 +23,7 @@ CREATE TABLE IF NOT EXISTS unit_types (
 -- this table containts the specific units like meters, inches, kilograms, etc.
 CREATE TABLE IF NOT EXISTS unit_definitions (
     unit_id SERIAL PRIMARY KEY,
-    unit_name VARCHAR(20) NOT NULL,
+    unit_name VARCHAR(20) NOT NULL UNIQUE,
     type_id INT,
     -- the foreign key references the `unit_types` table because
     -- the tuples in this table need to fall under a unit category.
@@ -39,7 +43,9 @@ CREATE TABLE IF NOT EXISTS unit_definitions (
 -- references the `unit_types` table.
 CREATE TABLE IF NOT EXISTS attribute_definitions (
     definition_id SERIAL PRIMARY KEY,
-    attribute_name VARCHAR(50) NOT NULL,
+    attribute_name VARCHAR(50) NOT NULL UNIQUE,
+    --TODO: use ENUM for the data_type, like 'numeric', 'text', 'boolean' etc.
+    -- maybe even add a seperate data_types table?
     data_type VARCHAR(50) NULL,
     unit_type INT,
     allowed_values VARCHAR(50) NULL,
@@ -100,6 +106,7 @@ CREATE TABLE IF NOT EXISTS inventory_transactions (
     location_id INT,
     quantity FLOAT NOT NULL,
     transaction_description VARCHAR(50),
+    transaction_date TIMESTAMP DEFAULT now() NOT NULL,
     supplier_id INT
     CHECK (quantity >= 0),
     -- restrict item deletion because we wanna preserve records (for now).
@@ -121,7 +128,7 @@ CREATE TABLE IF NOT EXISTS inventory (
     inventory_id SERIAL PRIMARY KEY,
     item_id INT NOT NULL,
     location_id INT,
-    quantity FLOAT NOT NULL
+    quantity FLOAT NOT NULL DEFAULT 0
 
     CHECK (quantity >= 0),
 

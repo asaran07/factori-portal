@@ -2,22 +2,21 @@
 
 ## Part A (DDL/Schema) [ARSH]
 
-- Every foreign key must have an ON DELETE/ON UPDATE clause. [ARSH]
-None of our foreign keys have them so we need to add this.
+- Every foreign key must have an ON DELETE/ON UPDATE clause. [ARSH] -FINISHED-
 
-- \>= 4 check constraints [ARSH]
-We need to have at least 4 check constraints, we have 0 right now.
+- \>= 4 check constraints [ARSH] -FINISHED-
 
-- \>= 4 default values. [ARSH]
+- \>= 4 default values. [ARSH] -FINISHED-
 Add default values like TIMESTAMP DEFAULT now() or quantity DEFAULT 0.
 
-- NOT NULL cleanup.
+- NOT NULL cleanup [ARSH] -FINISHED-
 Go through all fields and make sure the NULL values are okay.
 
 - Comments. [ARSH]
-Add comments to all `CREATE TABLE` commands in the schema file.
+Add comments to all `CREATE TABLE` commands in the schema file. -FINISHED-
 Also properly explain the point of that table and how
-it will be used.
+it will be used. -FINISHED-
+
 Add comments to test_populate file.
 
 - Single SQL file (final). [ARSH]
