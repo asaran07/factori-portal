@@ -145,6 +145,7 @@ CREATE TABLE IF NOT EXISTS inventory (
 
 -- the 'transactions' record table for when items were taken
 -- and put into different inventory loactions.
+--TODO: add comments to foreign keys
 CREATE TABLE IF NOT EXISTS inventory_records (
     record_id SERIAL PRIMARY KEY,
     item_id INT NOT NULL,

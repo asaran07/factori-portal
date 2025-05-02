@@ -19,7 +19,7 @@ after cloning the repo, do "make up", which should bring up the database,
 so it can be accessed either using the command line
 or some other dbms GUI tool like dbeaver.
 
-## database saving
+## database saving etc
 
 the database will only be hosted on everyone's own local docker volume,
 so the only files that everyone will share together are the sql and other files.
