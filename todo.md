@@ -1,23 +1,25 @@
 # TO-DO Board for Phase 2 - Group 11
 
-## Part A (DDL/Schema)
+## Part A (DDL/Schema) [ARSH]
 
-- Every foreign key must have an ON DELETE/ON UPDATE clause.
-None of our foreign keys have them so we need to add this.
+- Every foreign key must have an ON DELETE/ON UPDATE clause. [ARSH] -FINISHED-
 
-- \>= 4 check constraints
-We need to have at least 4 check constraints, we have 0 right now.
+- \>= 4 check constraints [ARSH] -FINISHED-
 
-- \>= 4 default values.
+- \>= 4 default values. [ARSH] -FINISHED-
 Add default values like TIMESTAMP DEFAULT now() or quantity DEFAULT 0.
 
-- NOT NULL cleanup.
+- NOT NULL cleanup [ARSH] -FINISHED-
 Go through all fields and make sure the NULL values are okay.
 
-- Comments.
-Add comments to both files.
+- Comments. [ARSH]
+Add comments to all `CREATE TABLE` commands in the schema file. -FINISHED-
+Also properly explain the point of that table and how
+it will be used. -FINISHED-
 
-- Single SQL file (final).
+Add comments to test_populate file.
+
+- Single SQL file (final). [ARSH]
 Add everything to single SQL file after all parts are done.
 
 ## Part B (Sample Data)
@@ -30,10 +32,13 @@ Requirement: \>= 10 tuples per table with realistic values.
 - attribute_definition OK.
 - If needed, add rows to item_attribute table to match others.
 
-- Add *10* tuples/sample data rows to
-**locations**, **suppliers**, **inventory_transactions**, **inventory**, and **inventory_records**.
+- Add *10* tuples/sample data rows to `locations`
+- Add *10* tuples/sample data rows to `suppliers`
+- Add *10* tuples/sample data rows to `inventory_transactions`
+- Add *10* tuples/sample data rows to `inventory`
+- Add *10* tuples/sample data rows to `inventory_records`
 
-## Part C (Queries)
+## Part C (Queries) [Evan] [Kyler]
 
 Requirement: Need *10* different non-trivial queries with
 the specific patters in the spec.

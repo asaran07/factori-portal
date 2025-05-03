@@ -145,6 +145,7 @@ INSERT INTO item_attributes (item_id, definition_id, attribute_value, unit_id) V
   (3, 5, '1.00', 2),
   -- Copper Wire
   (4, 4, '10', 1),
+<<<<<<< HEAD
   (4, 5, '12', 11);
 
 -- ----------  locations  ----------
@@ -268,3 +269,10 @@ VALUES
   (8, 8, 8,  318.0, '2025‑04‑21 09:40:00'),
   (9, 9, 9,   59.0, '2025‑04‑21 16:05:00'),
   (10,10,10,890.0, '2025‑04‑22 10:00:00');
+=======
+  (4, 5, '12', 11),
+  -- Glass Pane
+  (7, 1, '10', 1),
+  (7, 2, '8', 1);
+-- TESTTTIHJGGTGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+>>>>>>> f2d36f4050ba85e5d244f9e0384a85fcda78d42a
