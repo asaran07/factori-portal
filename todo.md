@@ -38,7 +38,7 @@ Requirement: \>= 10 tuples per table with realistic values.
 - Add *10* tuples/sample data rows to `inventory`
 - Add *10* tuples/sample data rows to `inventory_records`
 
-## Part C (Queries)
+## Part C (Queries) [Evan] [Kyler]
 
 Requirement: Need *10* different non-trivial queries with
 the specific patters in the spec.
