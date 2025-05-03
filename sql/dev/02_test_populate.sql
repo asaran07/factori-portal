@@ -146,4 +146,125 @@ INSERT INTO item_attributes (item_id, definition_id, attribute_value, unit_id) V
   -- Copper Wire
   (4, 4, '10', 1),
   (4, 5, '12', 11);
--- TESTTTIHJGGTGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+
+-- ----------  locations  ----------
+INSERT INTO locations (location_id, location_name, location_description) VALUES
+  (1, 'Seattle Warehouse',      'Primary distribution center ‑ Puget Sound'),
+  (2, 'Portland Depot',         'Regional bulk storage'),
+  (3, 'San Francisco Store',    'Retail storefront & micro‑DC'),
+  (4, 'Los Angeles Warehouse',  'Southern CA hub'),
+  (5, 'Denver Hub',             'Mountain region cross‑dock'),
+  (6, 'Chicago DC',             'Midwest fulfillment center'),
+  (7, 'New York Fulfillment',   'Northeast last‑mile hub'),
+  (8, 'Dallas Depot',           'South‑central distribution'),
+  (9, 'Miami Cross‑dock',       'Southeast gateway'),
+  (10,'Atlanta Spares',         'Warranty & returns stock');
+
+-- ----------  suppliers  ----------
+INSERT INTO suppliers (supplier_id, supplier_name) VALUES
+  (1, 'Acme Industrial Co.'),
+  (2, 'Global Metals Ltd.'),
+  (3, 'Pacific Plastics Inc.'),
+  (4, 'Bright Electrics LLC'),
+  (5, 'Frontier Fasteners'),
+  (6, 'Continental Chemicals'),
+  (7, 'Hydro‑Tech Fluids'),
+  (8, 'Sunrise Components'),
+  (9, 'Northwind Logistics'),
+  (10,'Evergreen Steel Works');
+
+-- ----------  inventory  ----------
+-- current on‑hand counts per item & location
+INSERT INTO inventory (inventory_id, item_id, location_id, quantity) VALUES
+  (1, 1, 1,   250.0),   -- Steel Beam @ Seattle
+  (2, 2, 2,  1800.0),   -- Copper Wire @ Portland
+  (3, 3, 4,   725.0),   -- Aluminum Sheet @ LA
+  (4, 4, 6,  5400.0),   -- Hex Bolt @ Chicago
+  (5, 5, 3,  1200.0),   -- Plastic Pellets @ SF
+  (6, 6, 5,    90.0),   -- Li‑ion Battery Pack @ Denver
+  (7, 7, 7,   450.0),   -- LED Module @ New York
+  (8, 8, 8,   320.0),   -- Thermal Paste @ Dallas
+  (9, 9, 9,    60.0),   -- Gearbox @ Miami
+  (10,10,10,  900.0);   -- Hydraulic Fluid @ Atlanta
+
+
+
+--SAMPLE ROWS
+-- ----------  inventory_transactions  ----------
+-- positive qty = receipt, negative = shipment/adjustment
+INSERT INTO inventory_transactions
+    (transaction_id, item_id, location_id, quantity, transaction_description, supplier_id)
+VALUES
+  (1, 1, 1,  +50.0,  'RECEIPT PO‑1042',        1),
+  (2, 2, 2, −120.0,  'SHIPMENT SO‑8897',       NULL),
+  (3, 3, 4,  +75.0,  'RECEIPT PO‑1048',        2),
+  (4, 4, 6, −600.0,  'SHIPMENT SO‑8905',       NULL),
+  (5, 5, 3,  −50.0,  'ADJUSTMENT CYCLE‑CNT',   NULL),
+  (6, 6, 5,  +30.0,  'RECEIPT PO‑1051',        6),
+  (7, 7, 7, −200.0,  'SHIPMENT SO‑8918',       NULL),
+  (8, 8, 8,  +40.0,  'RECEIPT PO‑1053',        4),
+  (9, 9, 9,  −10.0,  'ADJUSTMENT DAMAGE',      NULL),
+  (10,10,10, +300.0, 'RECEIPT PO‑1055',        7);
+
+-- ----------  inventory_records  ----------
+-- snapshots from recent physical counts
+INSERT INTO inventory_records
+    (record_id, item_id, location_id, quantity, date_of_count)
+VALUES
+  (1, 1, 1,  255.0, '2025‑04‑15 09:00:00'),
+  (2, 2, 2, 1675.0, '2025‑04‑16 14:30:00'),
+  (3, 3, 4,  720.0, '2025‑04‑17 10:15:00'),
+  (4, 4, 6, 4800.0, '2025‑04‑18 08:45:00'),
+  (5, 5, 3, 1150.0, '2025‑04‑18 15:20:00'),
+  (6, 6, 5,   95.0, '2025‑04‑19 11:10:00'),
+  (7, 7, 7,  460.0, '2025‑04‑20 13:55:00'),
+  (8, 8, 8,  318.0, '2025‑04‑21 09:40:00'),
+  (9, 9, 9,   59.0, '2025‑04‑21 16:05:00'),
+  (10,10,10,890.0, '2025‑04‑22 10:00:00');
+
+
+  -- ----------  inventory  ----------
+-- current on‑hand counts per item & location
+INSERT INTO inventory (inventory_id, item_id, location_id, quantity) VALUES
+  (1, 1, 1,   250.0),   -- Steel Beam @ Seattle
+  (2, 2, 2,  1800.0),   -- Copper Wire @ Portland
+  (3, 3, 4,   725.0),   -- Aluminum Sheet @ LA
+  (4, 4, 6,  5400.0),   -- Hex Bolt @ Chicago
+  (5, 5, 3,  1200.0),   -- Plastic Pellets @ SF
+  (6, 6, 5,    90.0),   -- Li‑ion Battery Pack @ Denver
+  (7, 7, 7,   450.0),   -- LED Module @ New York
+  (8, 8, 8,   320.0),   -- Thermal Paste @ Dallas
+  (9, 9, 9,    60.0),   -- Gearbox @ Miami
+  (10,10,10,  900.0);   -- Hydraulic Fluid @ Atlanta
+
+-- ----------  inventory_transactions  ----------
+-- positive qty = receipt, negative = shipment/adjustment
+INSERT INTO inventory_transactions
+    (transaction_id, item_id, location_id, quantity, transaction_description, supplier_id)
+VALUES
+  (1, 1, 1,  +50.0,  'RECEIPT PO‑1042',        1),
+  (2, 2, 2, −120.0,  'SHIPMENT SO‑8897',       NULL),
+  (3, 3, 4,  +75.0,  'RECEIPT PO‑1048',        2),
+  (4, 4, 6, −600.0,  'SHIPMENT SO‑8905',       NULL),
+  (5, 5, 3,  −50.0,  'ADJUSTMENT CYCLE‑CNT',   NULL),
+  (6, 6, 5,  +30.0,  'RECEIPT PO‑1051',        6),
+  (7, 7, 7, −200.0,  'SHIPMENT SO‑8918',       NULL),
+  (8, 8, 8,  +40.0,  'RECEIPT PO‑1053',        4),
+  (9, 9, 9,  −10.0,  'ADJUSTMENT DAMAGE',      NULL),
+  (10,10,10, +300.0, 'RECEIPT PO‑1055',        7);
+
+-- ----------  inventory_records  ----------
+-- snapshots from recent physical counts
+INSERT INTO inventory_records
+    (record_id, item_id, location_id, quantity, date_of_count)
+VALUES
+  (1, 1, 1,  255.0, '2025‑04‑15 09:00:00'),
+  (2, 2, 2, 1675.0, '2025‑04‑16 14:30:00'),
+  (3, 3, 4,  720.0, '2025‑04‑17 10:15:00'),
+  (4, 4, 6, 4800.0, '2025‑04‑18 08:45:00'),
+  (5, 5, 3, 1150.0, '2025‑04‑18 15:20:00'),
+  (6, 6, 5,   95.0, '2025‑04‑19 11:10:00'),
+  (7, 7, 7,  460.0, '2025‑04‑20 13:55:00'),
+  (8, 8, 8,  318.0, '2025‑04‑21 09:40:00'),
+  (9, 9, 9,   59.0, '2025‑04‑21 16:05:00'),
+  (10,10,10,890.0, '2025‑04‑22 10:00:00');
