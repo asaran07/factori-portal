@@ -3,3 +3,5 @@
 .github/CODEOWNERS @asaran07
 
 /backend/ @asaran07
+
+/sql/ @Kylerace
