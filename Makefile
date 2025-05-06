@@ -54,3 +54,13 @@ run-dev-scripts:
         echo "Running script: $$script_path"; \
         cat $$script_path | docker exec -i $(DB_CONTAINER) psql -U $(DB_USER) -d $(DB_NAME); \
     done
+
+# run the FastAPI backend development server on port 8000
+run-backend:
+	@echo "Starting backend server with Uvicorn..."
+	cd backend && source .venv/bin/activate && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+# install backend dependencies on pip
+install-backend:
+	@echo "Installing backend dependencies..."
+	cd backend && source .venv/bin/activate && pip install -r requirements.txt
