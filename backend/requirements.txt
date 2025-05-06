@@ -3,3 +3,4 @@ uvicorn[standard] # for running the server
 sqlmodel
 psycopg2-binary # postgres driver
 python-dotenv # for managing environment variables
+click
