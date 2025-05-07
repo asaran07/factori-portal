@@ -1,81 +1,61 @@
 
---queries do not currently conform to phase 2 requirements, but they do to week 3 requirements
+--1 Join at least three tables using JOIN ON
+-- lists all attributes and corresponding unit names for each item 
+SELECT i.item_name, a.attribute_name, u.unit_name
+FROM item_attributes ia
+JOIN items i ON ia.item_id = i.item_id
+JOIN attribute_definitions a ON ia.definition_id = a.definition_id
+JOIN unit_definitions u ON ia.unit_id = u.unit_id;
 
---SQL Query 1: Computes a join of at least three tables (must use JOIN ON)
--- select everything in item_attributes and replace the foreign keys with the corresponding names in the other tables
-SELECT
-  i.item_name,
-  ad.attribute_name,
-  ia.attribute_value,
-  ud.unit_name
-FROM
-  items i
-JOIN item_attributes ia       ON i.item_id = ia.item_id
-JOIN attribute_definitions ad ON ia.definition_id = ad.definition_id
-LEFT JOIN unit_definitions ud ON ia.unit_id = ud.unit_id
-ORDER BY i.item_id, ad.attribute_name;
-
-
---SQL Query 2: Uses nested queries with the IN, ANY or ALL operator and uses a GROUP BY clause
--- select every item with the attributes of width and height and print those values alongside the item name
-select i.item_name, width.attribute_value AS "Item Width", height.attribute_value AS "Item Height"
+--2 Use nested queries with IN, ANY, or ALL and include a GROUP BY clause
+-- list number of attributes by item which have been moved in amounts greater than 10
+SELECT i.item_name, COUNT(ia.attribute_id) AS attribute_count
 FROM items i
-JOIN (
-  SELECT ia1.item_id, ia1.attribute_value
-  FROM item_attributes ia1
-  JOIN attribute_definitions ad1 ON ia1.definition_id = ad1.definition_id
-  WHERE ad1.attribute_name = 'width'
-) width ON i.item_id = width.item_id
-JOIN (
-  SELECT ia2.item_id, ia2.attribute_value
-  FROM item_attributes ia2
-  JOIN attribute_definitions ad2 ON ia2.definition_id = ad2.definition_id
-  WHERE ad2.attribute_name = 'height'
-) height ON i.item_id = height.item_id
-GROUP BY i.item_name, width.attribute_value, height.attribute_value;
+JOIN item_attributes ia ON i.item_id = ia.item_id
+WHERE i.item_id IN (
+    SELECT item_id FROM inventory_transactions WHERE quantity > 10
+)
+GROUP BY i.item_name
+ORDER BY attribute_count DESC;
 
---SQL Query 3: A correlated nested query with proper aliasing applied
--- selects every item with the attribute of thickness measured in millimeters
---INSUFFICIENT
-SELECT
-  i.item_name,
-  ia.attribute_value,
-  ud.unit_name
-FROM
-  items i
-JOIN item_attributes ia       ON i.item_id = ia.item_id
+--3 A correlated subquery with appropriate aliasing
+-- list each item currently above 5 units in our inventory alongside the number of times a transaction has been logged with them
+SELECT i.item_name, (SELECT COUNT(*) FROM inventory_transactions t WHERE t.item_id = i.item_id) AS transaction_count
+FROM items i
+WHERE EXISTS (
+    SELECT * FROM inventory WHERE inventory.item_id = i.item_id AND inventory.quantity > 5
+);
+
+--4 Use a FULL OUTER JOIN
+-- list each item, the location its in, and the amount of that item in that location
+SELECT i.item_name, l.location_name, inv.quantity
+FROM items i
+FULL OUTER JOIN inventory inv ON i.item_id = inv.item_id
+FULL OUTER JOIN locations l ON inv.location_id = l.location_id;
+
+--5 Use a set operation: UNION, EXCEPT, or INTERSECT (verify DBMS support)
+-- selects all items that are in positive amounts in our inventory and are exactly 0.75 meters long
+SELECT i.item_name FROM items i
+JOIN item_attributes ia ON i.item_id = ia.item_id
 JOIN attribute_definitions ad ON ia.definition_id = ad.definition_id
-JOIN unit_definitions ud      ON ia.unit_id = ud.unit_id
-WHERE
-  ad.attribute_name = 'thickness'
-  AND CAST(ia.attribute_value AS FLOAT) > 1
-  AND ud.unit_name = 'millimeters';
+JOIN unit_definitions ud ON ia.unit_id = ud.unit_id
+WHERE ad.attribute_name = 'width' AND ud.unit_name = 'meters' AND ia.attribute_value = '0.75' /*pretend that we have meters/cm/etc conversions*/
+INTERSECT
+SELECT i.item_name FROM items i
+JOIN inventory_transactions it ON i.item_id = it.item_id
+WHERE it.quantity > 0;
 
 
---SQL Query 4: Uses a FULL OUTER JOIN
--- select all items in item attributes, find their name in the items table, and sort them by the number of attributes
-SELECT
-  i.item_name,
-  COUNT(ia.definition_id) AS num_attributes
-FROM
-  items i
-FULL JOIN item_attributes ia ON i.item_id = ia.item_id
-GROUP BY i.item_id, i.item_name
-HAVING COUNT(ia.definition_id) > 0
-ORDER BY num_attributes DESC;
+--6–8 Your own non-trivial queries using at least two tables
+-- sorts suppliers by amount of items we have from them
+SELECT s.supplier_name, SUM(it.quantity) AS total_supplied
+FROM suppliers s
+JOIN inventory_transactions it ON s.supplier_id = it.supplier_id
+GROUP BY s.supplier_name
+ORDER BY total_supplied DESC;
 
---SQL Query 5: Uses nested queries with any of the set operations UNION, EXCEPT, or INTERSECT*
-SELECT
-  i.item_name,
-  AVG(CAST(ia.attribute_value AS FLOAT)) AS avg_length,
-  ud.unit_name
-FROM
-  items i
-JOIN item_attributes ia       ON i.item_id = ia.item_id
-JOIN attribute_definitions ad ON ia.definition_id = ad.definition_id
-JOIN unit_definitions ud      ON ia.unit_id = ud.unit_id
-WHERE ad.attribute_name = 'length'
-GROUP BY i.item_id, i.item_name, ud.unit_name;
+--6–8 Your own non-trivial queries using at least two tables
+-- selects all items that dont have material attributes
 SELECT i.item_name
 FROM items i
 WHERE NOT EXISTS (
@@ -86,7 +66,8 @@ WHERE NOT EXISTS (
     AND ad.attribute_name = 'material'
 );
 
---SQL Query 6-8: Must use at least two tables in FROM clause
+--6–8 Your own non-trivial queries using at least two tables
+-- selects all unit types and the number of units with that type
 SELECT
   ut.type_name,
   COUNT(ud.unit_id) AS num_units
@@ -96,7 +77,9 @@ LEFT JOIN unit_definitions ud ON ut.type_id = ud.type_id
 GROUP BY ut.type_id, ut.type_name
 ORDER BY num_units DESC;
 
-SELECT i.item_name
+--6–8 Your own non-trivial queries using at least two tables
+-- selects all items with width and height and width greater than height
+SELECT i.item_name, ia_w.attribute_value AS "Width", ia_h.attribute_value AS "Height"
 FROM items i
 JOIN item_attributes ia_w ON i.item_id = ia_w.item_id
 JOIN attribute_definitions ad_w ON ia_w.definition_id = ad_w.definition_id
@@ -106,27 +89,22 @@ WHERE ad_w.attribute_name = 'width'
   AND ad_h.attribute_name = 'height'
   AND CAST(ia_w.attribute_value AS FLOAT) > CAST(ia_h.attribute_value AS FLOAT);
 
---SQL Query 9: Must use at least three tables in FROM clause
-SELECT
-  i.item_name,
-  COUNT(CASE WHEN ad.data_type = 'numeric' THEN 1 END) AS num_numeric_attributes
-FROM
-  items i
-LEFT JOIN item_attributes ia ON i.item_id = ia.item_id
-LEFT JOIN attribute_definitions ad ON ia.definition_id = ad.definition_id
-GROUP BY i.item_id, i.item_name
-ORDER BY num_numeric_attributes DESC;
+--9 A non-trivial query using at least three tables
+-- finds the inventory quantity of all items with unique attribute values
+SELECT i.item_name, a.attribute_name, ia.attribute_value, inv.quantity
+FROM items i
+JOIN item_attributes ia ON i.item_id = ia.item_id
+JOIN attribute_definitions a ON ia.definition_id = a.definition_id
+JOIN inventory inv ON i.item_id = inv.item_id
+ORDER BY inv.quantity DESC;
 
---SQL Query 10: i) Must use at least three tables in FROM clause; ii)Must use aliasing or renaming for at least once throughout SQL query
-SELECT
-  i.item_name,
-  MAX(CAST(ia.attribute_value AS FLOAT)) AS max_thickness,
-  ud.unit_name
-FROM
-  items i
-JOIN item_attributes ia       ON i.item_id = ia.item_id
-JOIN attribute_definitions ad ON ia.definition_id = ad.definition_id
-JOIN unit_definitions ud      ON ia.unit_id = ud.unit_id
-WHERE ad.attribute_name = 'thickness'
-GROUP BY i.item_id, i.item_name, ud.unit_name
-ORDER BY max_thickness DESC;
+--10 A non-trivial query using at least three tables with aliasing/renaming
+-- lists all items with inventories > 5, any attributes they have related to width, height, or depth, the value of that attribute, and where theyre stored
+SELECT i.item_name AS "Item", a.attribute_name AS "Attribute", ia.attribute_value, l.location_name AS "Location"
+FROM items i
+JOIN item_attributes ia ON i.item_id = ia.item_id
+JOIN attribute_definitions a ON ia.definition_id = a.definition_id
+JOIN inventory inv ON i.item_id = inv.item_id
+JOIN locations l ON inv.location_id = l.location_id
+WHERE inv.quantity > 5
+AND a.attribute_name IN ('width', 'height', 'depth');
