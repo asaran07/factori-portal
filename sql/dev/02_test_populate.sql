@@ -233,3 +233,44 @@ INSERT INTO inventory_transactions
  ((SELECT item_id FROM items WHERE item_name='Cardboard Box'),
   (SELECT location_id FROM locations WHERE location_name='Aisle B-02'),75,'RECEIPT PO-1048'),
 
+INSERT INTO inventory_records
+  (item_id, location_id, quantity, date_of_count) VALUES
+ ((SELECT item_id FROM items WHERE item_name='Iron Plate'),
+  (SELECT location_id FROM locations WHERE location_name='Rack A-01'),
+  255,'2025-04-15 09:00:00'),
+
+ ((SELECT item_id FROM items WHERE item_name='Copper Plate'),
+  (SELECT location_id FROM locations WHERE location_name='Rack A-02'),
+  1675,'2025-04-16 14:30:00'),
+
+ ((SELECT item_id FROM items WHERE item_name='Cardboard Box'),
+  (SELECT location_id FROM locations WHERE location_name='Aisle B-02'),
+  720,'2025-04-17 10:15:00'),
+
+ ((SELECT item_id FROM items WHERE item_name='Copper Wire'),
+  (SELECT location_id FROM locations WHERE location_name='Shelf C-Mid'),
+  4800,'2025-04-18 08:45:00'),
+
+ ((SELECT item_id FROM items WHERE item_name='Steel Rod'),
+  (SELECT location_id FROM locations WHERE location_name='Aisle B-01'),
+  1150,'2025-04-18 15:20:00'),
+
+ ((SELECT item_id FROM items WHERE item_name='Plastic Sheet'),
+  (SELECT location_id FROM locations WHERE location_name='Shelf C-Top'),
+  95,'2025-04-19 11:10:00'),
+
+ ((SELECT item_id FROM items WHERE item_name='Glass Pane'),
+  (SELECT location_id FROM locations WHERE location_name='Shelf C-Low'),
+  460,'2025-04-20 13:55:00'),
+
+ ((SELECT item_id FROM items WHERE item_name='Aluminum Foil'),
+  (SELECT location_id FROM locations WHERE location_name='Floor Stock'),
+  318,'2025-04-21 09:40:00'),
+
+ ((SELECT item_id FROM items WHERE item_name='Rubber Gasket'),
+  (SELECT location_id FROM locations WHERE location_name='QC Hold'),
+  59,'2025-04-21 16:05:00'),
+
+ ((SELECT item_id FROM items WHERE item_name='Brass Hex Nut'),
+  (SELECT location_id FROM locations WHERE location_name='Returns'),
+  890,'2025-04-22 10:00:00');
