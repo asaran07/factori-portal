@@ -107,8 +107,8 @@ CREATE TABLE IF NOT EXISTS inventory_transactions (
     quantity FLOAT NOT NULL,
     transaction_description VARCHAR(50),
     transaction_date TIMESTAMP DEFAULT now() NOT NULL,
-    supplier_id INT
-    CHECK (quantity >= 0),
+    supplier_id INT, -- temporarily comment out quantity check negative
+    -- CHECK (quantity >= 0),
     -- restrict item deletion because we wanna preserve records (for now).
     FOREIGN KEY (item_id) REFERENCES items (item_id)
     ON DELETE RESTRICT ON UPDATE CASCADE,
