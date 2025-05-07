@@ -231,5 +231,5 @@ INSERT INTO inventory_transactions
  ((SELECT item_id FROM items WHERE item_name='Copper Plate'),
   (SELECT location_id FROM locations WHERE location_name='Rack A-02'),-120,'SHIPMENT SO-8897',NULL),
  ((SELECT item_id FROM items WHERE item_name='Cardboard Box'),
-  (SELECT location_id FROM locations WHERE location_name='Aisle B-02'),75,'RECEIPT PO-1048')
+  (SELECT location_id FROM locations WHERE location_name='Aisle B-02'),75,'RECEIPT PO-1048', NULL)
 
