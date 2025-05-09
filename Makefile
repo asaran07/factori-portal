@@ -64,3 +64,20 @@ run-backend:
 install-backend:
 	@echo "Installing backend dependencies..."
 	cd backend && source .venv/bin/activate && pip install -r requirements.txt
+
+.PHONY: format
+
+format:
+	@echo "Running formatters..."
+	pre-commit run black --all-files
+	pre-commit run ruff --all-files
+	pre-commit run prettier --all-files
+	@echo "Formatting complete."
+
+# A more concise way to run all hooks (including formatters and any other linters)
+# You might prefer this if you want everything to run.
+# If you only want to run formatters, the specific calls above are better.
+format-all-hooks:
+	@echo "Running all pre-commit hooks on all files..."
+	pre-commit run --all-files
+	@echo "All hooks run."

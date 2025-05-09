@@ -1,4 +1,41 @@
-# quick info about the repo idea/structure
+# Working with the repository
+
+## pre-commit setup
+
+we're using `pre-commit` for formatting. It needs to be installed or all commits will fail.
+
+**One-Time Setup:**
+
+1. **Install `pre-commit`:**
+
+   - Either install `pre-commit` using pipx:
+
+     ```bash
+     pipx install pre-commit
+     ```
+
+   - Or you can also do it using pip it pipx doesn't work:
+
+     ```bash
+     pip install pre-commit
+     ```
+
+2. **Install Git Hooks:**
+   And then also run this in the root of the repository:
+
+   ```bash
+   pre-commit install
+   ```
+
+   This will set up the pre-commit script to run automatically before each commit.
+
+**Formatting Code:**
+
+Before committing, you can manually format all relevant files by running:
+
+```bash
+make format
+```
 
 ## docker & Makefile
 
