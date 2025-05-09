@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime, timezone
 
 
-class ItemsBase(SQLModel, table=True):
+class ItemsBase(SQLModel):
     item_name: str = Field(index=True)
     description: Optional[str] = None
 
