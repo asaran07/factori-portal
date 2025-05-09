@@ -1,6 +1,5 @@
-
-import sys, os
 import argparse
+
 
 def main():
     parser = argparse.ArgumentParser()
