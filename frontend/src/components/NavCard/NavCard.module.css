@@ -1,0 +1,26 @@
+.navCard {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 25px 30px;
+  min-width: 200px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+  text-decoration: none;
+  color: #333333;
+  cursor: pointer;
+}
+
+.navCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.navCard h3 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: 600;
+}
