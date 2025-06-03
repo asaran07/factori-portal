@@ -20,7 +20,6 @@ export default function ItemList({ items, loading, error }) {
 
   return (
     <div className={styles.itemListContainer}>
-      <h2>Item List</h2>
       <ul className={styles.list}>
         {items.map((item) => (
           <li key={item.item_id} className={styles.listItem}>
