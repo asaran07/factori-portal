@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import ItemList from "@/components/ItemList";
+import EditItemModal from "@/components/EditItemModal";
 import * as api from "@/services/api";
 import styles from "./page.module.css";
 
@@ -10,22 +11,64 @@ export default function ViewItemsPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingItem, setEditingItem] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const loadItems = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await api.getItems();
+      setItems(data);
+      setError(null);
+    } catch (err) {
+      setError(err);
+      console.error("Failed to fetch items:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    async function loadItems() {
+    loadItems();
+  }, [loadItems]);
+
+  const handleDeleteItem = async (itemId) => {
+    if (window.confirm("Are you sure you want to delete this item?")) {
       try {
         setLoading(true);
-        const data = await api.getItems();
-        setItems(data);
+        await api.deleteItem(itemId);
+        await loadItems();
       } catch (err) {
+        console.error("Failed to delete item:", err);
         setError(err);
-        console.error("Failed to fetch items:", err);
       } finally {
         setLoading(false);
       }
     }
-    loadItems();
-  }, []);
+  };
+
+  const handleOpenEditModal = (item) => {
+    setEditingItem(item);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditingItem(null);
+  };
+
+  const handleUpdateItem = async (updatedItemData) => {
+    if (!editingItem) return;
+    try {
+      await api.updateItem(editingItem.item_id, updatedItemData);
+      handleCloseEditModal();
+      await loadItems();
+    } catch (err) {
+      console.error("Failed to update item:", err);
+      setError(new Error("Failed to update item. " + (err.message || "")));
+      throw err;
+    }
+  };
 
   return (
     <div className={styles.pageWrapper}>
@@ -40,9 +83,24 @@ export default function ViewItemsPage() {
         </div>
         <div className={styles.centerSection}>
           <div className={styles.itemsListWrapper}>
-            <ItemList items={items} loading={loading} error={error} />
+            <ItemList
+              items={items}
+              loading={loading}
+              error={error}
+              onEdit={handleOpenEditModal}
+              onDelete={handleDeleteItem}
+            />
           </div>
         </div>
+
+        {isEditModalOpen && editingItem && (
+          <EditItemModal
+            item={editingItem}
+            isOpen={isEditModalOpen}
+            onClose={handleCloseEditModal}
+            onSave={handleUpdateItem}
+          />
+        )}
       </div>
     </div>
   );

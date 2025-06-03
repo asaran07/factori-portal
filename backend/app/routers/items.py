@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from typing import List
 
 from ..db import get_session
-from ..models import Items, ItemRead, ItemCreate
+from ..models import Items, ItemRead, ItemCreate, ItemUpdate
 
 router = APIRouter()
 
@@ -35,3 +35,38 @@ async def read_item_by_id(item_id: int, db: Session = Depends(get_session)):
     if not db_item:
         raise HTTPException(status_code=404, detail="Item not found")
     return db_item
+
+
+# PATCH endpoint to update an existing item by its ID
+@router.patch("/{item_id}", response_model=ItemRead)
+async def update_item_endpoint(
+    item_id: int, item_update: ItemUpdate, db: Session = Depends(get_session)
+):
+    db_item = db.get(Items, item_id)
+    if not db_item:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Item not found"
+        )
+
+    update_data = item_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_item, key, value)
+
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+
+# DELETE endpoint to delete an item by its ID
+@router.delete("/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_item_endpoint(item_id: int, db: Session = Depends(get_session)):
+    db_item = db.get(Items, item_id)
+    if not db_item:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Item not found"
+        )
+
+    db.delete(db_item)
+    db.commit()
+    return None

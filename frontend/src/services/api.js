@@ -32,25 +32,23 @@ async function request(endpoint, options = {}) {
         errorDetail =
           errorData.detail || JSON.stringify(errorData) || errorDetail;
       } catch (e) {
-        // if response is not JSON or error parsing JSON
         errorDetail = response.statusText || errorDetail;
       }
       throw new Error(errorDetail);
     }
-    // handle cases where the response might be empty (e.g., 204 No Content)
     if (response.status === 204) {
       return null;
     }
     return await response.json();
   } catch (error) {
     console.error("API request failed:", endpoint, error.message);
-    throw error; // re-throw the error so it can be caught by the caller
+    throw error;
   }
 }
 
 /**
  * Fetches a list of all items.
- * @returns {Promise<Array<object>>} - A promise that resolves to an array of items.>}
+ * @returns {Promise<Array<object>>} - A promise that resolves to an array of items.
  */
 export const getItems = () => {
   return request("/items/");
@@ -62,7 +60,6 @@ export const getItems = () => {
  * @returns {Promise<object>} - A promise that resolves to the item object.
  */
 export const getItemById = (itemId) => {
-  // Ensure the endpoint for fetching by ID ends with a slash if your API expects it
   return request(`/items/${itemId}/`);
 };
 
@@ -77,5 +74,31 @@ export const createItem = (itemData) => {
   return request("/items/", {
     method: "POST",
     body: JSON.stringify(itemData),
+  });
+};
+
+/**
+ * Updates an existing item by its ID.
+ * @param {number|string} itemId - The ID of the item to update.
+ * @param {object} itemData - The data to update the item with (only include fields to be updated).
+ * @param {string} [itemData.item_name] - The new name of the item.
+ * @param {string} [itemData.description] - The new description of the item.
+ * @returns {Promise<object>} - A promise that resolves to the updated item object.
+ */
+export const updateItem = (itemId, itemData) => {
+  return request(`/items/${itemId}/`, {
+    method: "PATCH",
+    body: JSON.stringify(itemData),
+  });
+};
+
+/**
+ * Deletes an item by its ID.
+ * @param {number|string} itemId - The ID of the item to delete.
+ * @returns {Promise<null>} - A promise that resolves to null (or void) upon successful deletion.
+ */
+export const deleteItem = (itemId) => {
+  return request(`/items/${itemId}/`, {
+    method: "DELETE",
   });
 };
