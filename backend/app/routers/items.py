@@ -1,11 +1,21 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from typing import List
 
 from ..db import get_session
-from ..models import Items, ItemRead
+from ..models import Items, ItemRead, ItemCreate
 
 router = APIRouter()
+
+
+# POST endpoint to create a new item
+@router.post("/", response_model=ItemRead, status_code=status.HTTP_201_CREATED)
+async def create_item_endpoint(item: ItemCreate, db: Session = Depends(get_session)):
+    db_item = Items.model_validate(item)
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
 
 
 # this gets all items from the database

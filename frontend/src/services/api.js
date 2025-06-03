@@ -32,17 +32,19 @@ async function request(endpoint, options = {}) {
         errorDetail =
           errorData.detail || JSON.stringify(errorData) || errorDetail;
       } catch (e) {
+        // if response is not JSON or error parsing JSON
         errorDetail = response.statusText || errorDetail;
       }
       throw new Error(errorDetail);
     }
+    // handle cases where the response might be empty (e.g., 204 No Content)
     if (response.status === 204) {
       return null;
     }
     return await response.json();
   } catch (error) {
     console.error("API request failed:", endpoint, error.message);
-    throw error;
+    throw error; // re-throw the error so it can be caught by the caller
   }
 }
 
@@ -60,5 +62,20 @@ export const getItems = () => {
  * @returns {Promise<object>} - A promise that resolves to the item object.
  */
 export const getItemById = (itemId) => {
+  // Ensure the endpoint for fetching by ID ends with a slash if your API expects it
   return request(`/items/${itemId}/`);
+};
+
+/**
+ * Creates a new item.
+ * @param {object} itemData - The data for the new item.
+ * @param {string} itemData.item_name - The name of the item.
+ * @param {string} [itemData.description] - The optional description of the item.
+ * @returns {Promise<object>} - A promise that resolves to the created item object.
+ */
+export const createItem = (itemData) => {
+  return request("/items/", {
+    method: "POST",
+    body: JSON.stringify(itemData),
+  });
 };
