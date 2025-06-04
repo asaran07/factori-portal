@@ -43,7 +43,7 @@ export default function AddItemPage() {
       }, 2000);
     } catch (err) {
       setError(err.message || "Failed to create item. Please try again.");
-      console.error("Failed to create item:", err);
+      console.error("Failed to create item:", err); // maybe add a redirect here
     } finally {
       setIsLoading(false);
     }

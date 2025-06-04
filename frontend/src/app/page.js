@@ -11,7 +11,7 @@ export default function Home() {
       {}
       <DashboardLayout>
         <NavCard title="Manage Items" href="/manage-items" />
-        {}
+        <NavCard title="Manage Attributes" href="/manage-attributes" />
       </DashboardLayout>
     </div>
   );
