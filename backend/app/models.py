@@ -17,6 +17,9 @@ class Items(ItemsBase, table=True):
         default_factory=lambda: datetime.now(timezone.utc), nullable=True
     )
 
+    inventory_entries: List["Inventory"] = Relationship(back_populates="item")
+    transactions: List["InventoryTransactions"] = Relationship(back_populates="item")
+
 
 # what the items should look like when when read from the API
 class ItemRead(ItemsBase):
@@ -106,6 +109,11 @@ class LocationBase(SQLModel):
 class Locations(LocationBase, table=True):
     location_id: Optional[int] = Field(default=None, primary_key=True)
 
+    inventory_entries: List["Inventory"] = Relationship(back_populates="location")
+    transactions: List["InventoryTransactions"] = Relationship(
+        back_populates="location"
+    )
+
 
 # reading a location
 class LocationRead(LocationBase):
@@ -122,3 +130,66 @@ class LocationCreate(LocationBase):
 class LocationUpdate(SQLModel):
     location_name: Optional[str] = None
     location_description: Optional[str] = None
+
+
+class SupplierBase(SQLModel):
+    supplier_name: str = Field(index=True, unique=True)
+
+
+class Suppliers(SupplierBase, table=True):
+    supplier_id: Optional[int] = Field(default=None, primary_key=True)
+
+    transactions: List["InventoryTransactions"] = Relationship(
+        back_populates="supplier"
+    )
+
+
+class SupplierRead(SupplierBase):
+    supplier_id: int
+
+
+class SupplierCreate(SupplierBase):
+    pass
+
+
+class SupplierUpdate(SQLModel):
+    supplier_name: Optional[str] = None
+
+
+class InventoryBase(SQLModel):
+    quantity: float = Field(default=0)
+    item_id: int = Field(foreign_key="items.item_id")
+    location_id: Optional[int] = Field(
+        default=None, foreign_key="locations.location_id"
+    )
+
+
+class Inventory(InventoryBase, table=True):
+    inventory_id: Optional[int] = Field(default=None, primary_key=True)
+
+    item: "Items" = Relationship(back_populates="inventory_entries")
+    location: Optional["Locations"] = Relationship(back_populates="inventory_entries")
+
+
+class InventoryTransactionsBase(SQLModel):
+    quantity: float
+    transaction_description: Optional[str] = Field(default=None, max_length=50)
+    item_id: int = Field(foreign_key="items.item_id")
+    location_id: Optional[int] = Field(
+        default=None, foreign_key="locations.location_id"
+    )
+    supplier_id: Optional[int] = Field(
+        default=None, foreign_key="suppliers.supplier_id"
+    )
+
+
+class InventoryTransactions(InventoryTransactionsBase, table=True):
+    __tablename__ = "inventory_transactions"
+    transaction_id: Optional[int] = Field(default=None, primary_key=True)
+    transaction_date: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
+
+    item: "Items" = Relationship(back_populates="transactions")
+    location: Optional["Locations"] = Relationship(back_populates="transactions")
+    supplier: Optional["Suppliers"] = Relationship(back_populates="transactions")

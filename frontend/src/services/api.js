@@ -104,6 +104,67 @@ export const deleteItem = (itemId) => {
 };
 
 /**
+ * Fetches a list of all locations.
+ * @returns {Promise<Array<object>>} - A promise that resolves to an array of locations.
+ */
+export const getLocations = () => {
+  return request("/locations");
+};
+
+/**
+ * Fetches a single location by its ID.
+ * @param {number|string} locationId - The ID of the location to fetch.
+ * @returns {Promise<object>} - A promise that resolves to the location object.
+ */
+export const getLocationById = (locationId) => {
+  return request(`/locations/${locationId}`);
+};
+
+/**
+ * Creates a new location.
+ * @param {object} locationData - The data for the new location.
+ * @param {string} locationData.location_name - The name of the location.
+ * @param {string} [locationData.location_description] - The optional description.
+ * @returns {Promise<object>} - A promise that resolves to the created location object.
+ */
+export const createLocation = (locationData) => {
+  return request("/locations", {
+    method: "POST",
+    body: JSON.stringify(locationData),
+  });
+};
+
+/**
+ * Updates an existing location by its ID.
+ * @param {number|string} locationId - The ID of the location to update.
+ * @param {object} locationData - The data to update (only include fields to be updated).
+ * @returns {Promise<object>} - A promise that resolves to the updated location object.
+ */
+export const updateLocation = (locationId, locationData) => {
+  return request(`/locations/${locationId}`, {
+    method: "PATCH",
+    body: JSON.stringify(locationData),
+  });
+};
+
+/**
+ * Deletes a location by its ID.
+ * @param {number|string} locationId - The ID of the location to delete.
+ * @param {boolean} [confirmOrphan=false] - Set to true to confirm deletion even if it orphans records.
+ * @returns {Promise<null>} - A promise that resolves to null upon successful deletion.
+ */
+export const deleteLocation = (locationId, confirmOrphan = false) => {
+  let endpoint = `/locations/${locationId}`;
+  if (confirmOrphan) {
+    // query parameter to the URL for the backend to see
+    endpoint += "?confirmOrphan=true";
+  }
+  return request(endpoint, {
+    method: "DELETE",
+  });
+};
+
+/**
  * Fetches a list of all unit types.
  * @returns {Promise<Array<object>>} - A promise that resolves to an array of unit types.
  * Each unit type object should contain type_id and type_name.

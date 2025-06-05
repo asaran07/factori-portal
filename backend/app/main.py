@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import items, attributes, unit_types
+from .routers import items, attributes, unit_types, locations
 
 app = FastAPI(title="FactoriPortal API")
 
@@ -32,6 +32,7 @@ app.add_middleware(
 app.include_router(items.router, prefix="/api/v1/items", tags=["items"])
 app.include_router(attributes.router, prefix="/api/v1/attributes", tags=["Attributes"])
 app.include_router(unit_types.router, prefix="/api/v1/unit-types", tags=["Unit Types"])
+app.include_router(locations.router, prefix="/api/v1/locations", tags=["Locations"])
 
 
 # the decorator tells FastAPI that when an HTTP GET request comes in for
