@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import AttributeList from "@/components/AttributeList";
-import EditAttributeModal from "@/components/EditItemModal"; // TEMPORARY: Using EditItemModal as placeholder
+import EditAttributeModal from "@/components/EditAttributeModal";
 import * as api from "@/services/api";
 import styles from "./page.module.css";
 
@@ -61,16 +61,13 @@ export default function ViewAttributesPage() {
     setEditingAttribute(null);
   };
 
-  const handleUpdateAttribute = async (updatedAttributeData) => {
+  const handleUpdateAttribute = async (updatedAttributeDataFromModal) => {
     if (!editingAttribute) return;
     try {
-      const { definition_id, unit_type_details, ...payload } = editingAttribute;
-      const dataToUpdate = { ...payload, ...updatedAttributeData };
-
-      // If unit_type_id needs to be sent, ensure it's in updatedAttributeData
-      // Example: await api.updateAttribute(editingAttribute.definition_id, { attribute_name: "new name", unit_type_id: 3 });
-
-      await api.updateAttribute(editingAttribute.definition_id, dataToUpdate);
+      await api.updateAttribute(
+        editingAttribute.definition_id,
+        updatedAttributeDataFromModal,
+      );
       handleCloseEditModal();
       await loadAttributes();
     } catch (err) {
@@ -104,7 +101,7 @@ export default function ViewAttributesPage() {
 
         {isEditModalOpen && editingAttribute && (
           <EditAttributeModal
-            item={editingAttribute}
+            attributeToEdit={editingAttribute}
             isOpen={isEditModalOpen}
             onClose={handleCloseEditModal}
             onSave={handleUpdateAttribute}
