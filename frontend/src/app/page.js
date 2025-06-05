@@ -12,6 +12,7 @@ export default function Home() {
       <DashboardLayout>
         <NavCard title="Manage Items" href="/manage-items" />
         <NavCard title="Manage Attributes" href="/manage-attributes" />
+        <NavCard title="Manage Storage" href="/manage-storage" />
       </DashboardLayout>
     </div>
   );
