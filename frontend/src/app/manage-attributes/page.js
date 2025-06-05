@@ -2,7 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import styles from "../manage-items/page.module.css";
+import SimpleMenuButton from "@/components/SimpleMenuButton/SimpleMenuButton";
+import styles from "../manage-items/page.module.css"; //
 
 export default function ManageAttributesPage() {
   return (
@@ -15,8 +16,24 @@ export default function ManageAttributesPage() {
             </Link>
           </div>
           <div className={styles.headerSection}>
-            <h1 className={styles.pageTitle}>Manage Attributes</h1>
-            <p className={styles.placeholderText}>WIP</p>
+            <h1>Manage Attributes</h1>
+            <p>
+              Define and organize attributes that can be assigned to items.
+              <br />
+              Attributes help detail, categorize, and track specific
+              characteristics of your items.
+            </p>
+          </div>
+        </div>
+
+        <div className={styles.centerSection}>
+          <div className={styles.menuButtonSection}>
+            <SimpleMenuButton href="/manage-attributes/view">
+              View Attributes
+            </SimpleMenuButton>
+            <SimpleMenuButton href="/manage-attributes/add">
+              Add New Attribute
+            </SimpleMenuButton>
           </div>
         </div>
       </div>

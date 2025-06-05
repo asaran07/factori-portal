@@ -51,7 +51,7 @@ async function request(endpoint, options = {}) {
  * @returns {Promise<Array<object>>} - A promise that resolves to an array of items.
  */
 export const getItems = () => {
-  return request("/items/");
+  return request("/items");
 };
 
 /**
@@ -60,7 +60,7 @@ export const getItems = () => {
  * @returns {Promise<object>} - A promise that resolves to the item object.
  */
 export const getItemById = (itemId) => {
-  return request(`/items/${itemId}/`);
+  return request(`/items/${itemId}`);
 };
 
 /**
@@ -71,7 +71,7 @@ export const getItemById = (itemId) => {
  * @returns {Promise<object>} - A promise that resolves to the created item object.
  */
 export const createItem = (itemData) => {
-  return request("/items/", {
+  return request("/items", {
     method: "POST",
     body: JSON.stringify(itemData),
   });
@@ -86,7 +86,7 @@ export const createItem = (itemData) => {
  * @returns {Promise<object>} - A promise that resolves to the updated item object.
  */
 export const updateItem = (itemId, itemData) => {
-  return request(`/items/${itemId}/`, {
+  return request(`/items/${itemId}`, {
     method: "PATCH",
     body: JSON.stringify(itemData),
   });
@@ -98,7 +98,77 @@ export const updateItem = (itemId, itemData) => {
  * @returns {Promise<null>} - A promise that resolves to null (or void) upon successful deletion.
  */
 export const deleteItem = (itemId) => {
-  return request(`/items/${itemId}/`, {
+  return request(`/items/${itemId}`, {
+    method: "DELETE",
+  });
+};
+
+/**
+ * Fetches a list of all unit types.
+ * @returns {Promise<Array<object>>} - A promise that resolves to an array of unit types.
+ * Each unit type object should contain type_id and type_name.
+ */
+export const getUnitTypes = () => {
+  return request("/unit-types");
+};
+
+/**
+ * Fetches a list of all attribute definitions.
+ * @returns {Promise<Array<object>>} - A promise that resolves to an array of attribute definitions.
+ */
+export const getAttributes = () => {
+  return request("/attributes");
+};
+
+/**
+ * Fetches a single attribute definition by its ID.
+ * @param {number|string} attributeId - The ID of the attribute definition to fetch.
+ * @returns {Promise<object>} - A promise that resolves to the attribute definition object.
+ */
+export const getAttributeById = (attributeId) => {
+  return request(`/attributes/${attributeId}`);
+};
+
+/**
+ * Creates a new attribute definition.
+ * @param {object} attributeData - The data for the new attribute definition.
+ * @param {string} attributeData.attribute_name - The name of the attribute.
+ * @param {number} attributeData.unit_type_id - The ID of the associated unit type.
+ * @param {string} [attributeData.data_type] - The optional data type.
+ * @param {string} [attributeData.allowed_values] - The optional allowed values.
+ * @returns {Promise<object>} - A promise that resolves to the created attribute definition object.
+ */
+export const createAttribute = (attributeData) => {
+  return request("/attributes", {
+    method: "POST",
+    body: JSON.stringify(attributeData),
+  });
+};
+
+/**
+ * Updates an existing attribute definition by its ID.
+ * @param {number|string} attributeId - The ID of the attribute definition to update.
+ * @param {object} attributeData - The data to update the attribute with.
+ * @param {string} [attributeData.attribute_name] - The new name of the attribute.
+ * @param {number} [attributeData.unit_type_id] - The new ID of the associated unit type.
+ * @param {string} [attributeData.data_type] - The new data type.
+ * @param {string} [attributeData.allowed_values] - The new allowed values.
+ * @returns {Promise<object>} - A promise that resolves to the updated attribute definition object.
+ */
+export const updateAttribute = (attributeId, attributeData) => {
+  return request(`/attributes/${attributeId}`, {
+    method: "PATCH",
+    body: JSON.stringify(attributeData),
+  });
+};
+
+/**
+ * Deletes an attribute definition by its ID.
+ * @param {number|string} attributeId - The ID of the attribute definition to delete.
+ * @returns {Promise<null>} - A promise that resolves to null upon successful deletion.
+ */
+export const deleteAttribute = (attributeId) => {
+  return request(`/attributes/${attributeId}`, {
     method: "DELETE",
   });
 };
