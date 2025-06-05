@@ -96,3 +96,29 @@ class AttributeDefinitionUpdate(SQLModel):
     unit_type_id: Optional[int] = None
     data_type: Optional[str] = None
     allowed_values: Optional[str] = None
+
+
+class LocationBase(SQLModel):
+    location_name: str = Field(index=True, unique=True)  # VARCHAR(50) NOT NULL UNIQUE
+    location_description: Optional[str] = None  # VARCHAR(50)
+
+
+class Locations(LocationBase, table=True):
+    location_id: Optional[int] = Field(default=None, primary_key=True)
+
+
+# reading a location
+class LocationRead(LocationBase):
+    location_id: int
+
+
+# creating a new location
+# 'location_name' (required); 'location_description' (optional)
+class LocationCreate(LocationBase):
+    pass
+
+
+# updating an existing location (all fields optional)
+class LocationUpdate(SQLModel):
+    location_name: Optional[str] = None
+    location_description: Optional[str] = None
