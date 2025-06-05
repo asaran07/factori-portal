@@ -76,7 +76,10 @@ export default function ViewItemsPage() {
         <div className={styles.topSection}>
           <div className={styles.topBar}>
             <Link href="/manage-items" className={styles.backLink}>
-              &larr; Back to Manage Items
+              &larr; Manage Items
+            </Link>
+            <Link href="/" className={styles.backLink}>
+              &larr; Dashboard
             </Link>
           </div>
           <h1 className={styles.pageTitle}>All Items</h1>
