@@ -233,3 +233,55 @@ export const deleteAttribute = (attributeId) => {
     method: "DELETE",
   });
 };
+
+// =================================================================
+// Functions for managing Item Attributes
+// =================================================================
+
+/**
+ * Assigns an attribute to an item.
+ * @param {object} itemAttributeData - The data for the new item-attribute link.
+ * @param {number} itemAttributeData.item_id - The ID of the item.
+ * @param {number} itemAttributeData.definition_id - The ID of the attribute definition.
+ * @param {string} [itemAttributeData.attribute_value] - The value of the attribute.
+ * @param {number} [itemAttributeData.unit_id] - The ID of the unit.
+ * @returns {Promise<object>} - The created item attribute object.
+ */
+export const createItemAttribute = (itemAttributeData) => {
+  return request("/item-attributes", {
+    method: "POST",
+    body: JSON.stringify(itemAttributeData),
+  });
+};
+
+/**
+ * Updates an assigned attribute on an item.
+ * @param {number|string} attributeId - The ID of the item_attributes record to update.
+ * @param {object} itemAttributeData - The data to update.
+ * @returns {Promise<object>} - The updated item attribute object.
+ */
+export const updateItemAttribute = (attributeId, itemAttributeData) => {
+  return request(`/item-attributes/${attributeId}`, {
+    method: "PATCH",
+    body: JSON.stringify(itemAttributeData),
+  });
+};
+
+/**
+ * Deletes an assigned attribute from an item.
+ * @param {number|string} attributeId - The ID of the item_attributes record to delete.
+ * @returns {Promise<null>}
+ */
+export const deleteItemAttribute = (attributeId) => {
+  return request(`/item-attributes/${attributeId}`, {
+    method: "DELETE",
+  });
+};
+
+/**
+ * Fetches a list of all unit definitions (e.g., kg, cm, pcs).
+ * @returns {Promise<Array<object>>} - A promise that resolves to an array of unit definitions.
+ */
+export const getUnitDefinitions = () => {
+  return request("/unit-definitions");
+};

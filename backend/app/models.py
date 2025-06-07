@@ -2,6 +2,124 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 from datetime import datetime, timezone
 
+# =================================================================
+# 1. Unit & Attribute Foundational Models
+# =================================================================
+
+
+class UnitTypeBase(SQLModel):
+    type_name: str = Field(unique=True, index=True)
+
+
+class UnitType(UnitTypeBase, table=True):
+    __tablename__ = "unit_types"
+    type_id: Optional[int] = Field(default=None, primary_key=True)
+    attribute_definitions: List["AttributeDefinition"] = Relationship(
+        back_populates="unit_type_details"
+    )
+    unit_definitions: List["UnitDefinition"] = Relationship(back_populates="type")
+
+
+class UnitTypeRead(UnitTypeBase):
+    type_id: int
+
+
+class UnitDefinitionBase(SQLModel):
+    unit_name: str = Field(unique=True)
+    type_id: int = Field(foreign_key="unit_types.type_id")
+
+
+class UnitDefinition(UnitDefinitionBase, table=True):
+    __tablename__ = "unit_definitions"
+    unit_id: Optional[int] = Field(default=None, primary_key=True)
+    type: UnitType = Relationship(back_populates="unit_definitions")
+    item_attributes: List["ItemAttribute"] = Relationship(back_populates="unit")
+
+
+class UnitDefinitionRead(UnitDefinitionBase):
+    unit_id: int
+
+
+class AttributeDefinitionAPIBase(SQLModel):
+    attribute_name: str
+    data_type: Optional[str] = None
+    allowed_values: Optional[str] = None
+
+
+class AttributeDefinition(SQLModel, table=True):
+    __tablename__ = "attribute_definitions"
+    definition_id: Optional[int] = Field(default=None, primary_key=True)
+    attribute_name: str = Field(unique=True, index=True)
+    data_type: Optional[str] = None
+    allowed_values: Optional[str] = None
+    unit_type: Optional[int] = Field(default=None, foreign_key="unit_types.type_id")
+    unit_type_details: Optional[UnitType] = Relationship(
+        back_populates="attribute_definitions"
+    )
+    item_attributes: List["ItemAttribute"] = Relationship(back_populates="definition")
+
+
+class AttributeDefinitionRead(AttributeDefinitionAPIBase):
+    definition_id: int
+    unit_type: Optional[int] = None
+    unit_type_details: Optional[UnitTypeRead] = None
+
+
+class AttributeDefinitionCreate(SQLModel):
+    attribute_name: str
+    unit_type_id: int
+    data_type: Optional[str] = None
+    allowed_values: Optional[str] = None
+
+
+class AttributeDefinitionUpdate(SQLModel):
+    attribute_name: Optional[str] = None
+    unit_type_id: Optional[int] = None
+    data_type: Optional[str] = None
+    allowed_values: Optional[str] = None
+
+
+# =================================================================
+# 2. Item Models & Item-Attribute Link Models
+#
+#    NOTE: ItemAttribute models are defined before the Item models
+#    that reference them to prevent forward reference errors.
+# =================================================================
+
+
+class ItemAttributeBase(SQLModel):
+    attribute_value: Optional[str] = None
+    item_id: int = Field(foreign_key="items.item_id")
+    definition_id: int = Field(foreign_key="attribute_definitions.definition_id")
+    unit_id: Optional[int] = Field(default=None, foreign_key="unit_definitions.unit_id")
+
+
+class ItemAttribute(ItemAttributeBase, table=True):
+    __tablename__ = "item_attributes"
+    attribute_id: Optional[int] = Field(default=None, primary_key=True)
+    item: "Items" = Relationship(back_populates="attributes")
+    definition: AttributeDefinition = Relationship(back_populates="item_attributes")
+    unit: Optional[UnitDefinition] = Relationship(back_populates="item_attributes")
+
+
+class ItemAttributeRead(SQLModel):
+    attribute_id: int
+    attribute_value: Optional[str]
+    definition: AttributeDefinitionRead
+    unit: Optional[UnitDefinitionRead] = None
+
+
+class ItemAttributeCreate(SQLModel):
+    item_id: int
+    definition_id: int
+    attribute_value: Optional[str] = None
+    unit_id: Optional[int] = None
+
+
+class ItemAttributeUpdate(SQLModel):
+    attribute_value: Optional[str] = None
+    unit_id: Optional[int] = None
+
 
 class ItemsBase(SQLModel):
     item_name: str = Field(index=True)
@@ -16,117 +134,56 @@ class Items(ItemsBase, table=True):
     updated_at: Optional[datetime] = Field(
         default_factory=lambda: datetime.now(timezone.utc), nullable=True
     )
-
     inventory_entries: List["Inventory"] = Relationship(back_populates="item")
     transactions: List["InventoryTransactions"] = Relationship(back_populates="item")
+    attributes: List[ItemAttribute] = Relationship(back_populates="item")
 
 
-# what the items should look like when when read from the API
 class ItemRead(ItemsBase):
     item_id: int
     created_at: datetime
     updated_at: datetime
 
 
-# no extra fields needed for creation other than whats in ItemsBase
+class ItemReadWithAttributes(ItemRead):
+    attributes: List[ItemAttributeRead] = []
+
+
 class ItemCreate(ItemsBase):
     pass
 
 
-# everything is optional here because the clint might only want to update one field
 class ItemUpdate(SQLModel):
     item_name: Optional[str] = None
     description: Optional[str] = None
 
 
-class UnitTypeBase(SQLModel):
-    # from schema: type_name VARCHAR(30) NOT NULL UNIQUE
-    type_name: str = Field(unique=True, index=True)
-
-
-class UnitType(UnitTypeBase, table=True):
-    __tablename__ = "unit_types"
-    type_id: Optional[int] = Field(default=None, primary_key=True)
-
-    # relationship: a UnitType can be associated with multiple AttributeDefinitions
-    attribute_definitions: List["AttributeDefinition"] = Relationship(
-        back_populates="unit_type_details"
-    )
-
-
-class UnitTypeRead(UnitTypeBase):
-    type_id: int
-
-
-class AttributeDefinitionAPIBase(SQLModel):
-    attribute_name: str
-    data_type: Optional[str] = None
-    allowed_values: Optional[str] = None
-
-
-class AttributeDefinition(SQLModel, table=True):
-    __tablename__ = "attribute_definitions"
-    definition_id: Optional[int] = Field(default=None, primary_key=True)
-    # from schema: attribute_name VARCHAR(50) NOT NULL UNIQUE
-    attribute_name: str = Field(unique=True, index=True)
-    data_type: Optional[str] = None
-    allowed_values: Optional[str] = None
-
-    # from schema: unit_type INT, FOREIGN KEY (unit_type) REFERENCES unit_types (type_id)
-    unit_type: Optional[int] = Field(default=None, foreign_key="unit_types.type_id")
-
-    # relationship: an AttributeDefinition refers to one UnitType
-    unit_type_details: Optional[UnitType] = Relationship(
-        back_populates="attribute_definitions"
-    )
-
-
-class AttributeDefinitionCreate(SQLModel):
-    attribute_name: str
-    unit_type_id: int  # frontend will provide the ID of an existing UnitType
-    data_type: Optional[str] = None
-    allowed_values: Optional[str] = None
-
-
-class AttributeDefinitionRead(AttributeDefinitionAPIBase):
-    definition_id: int
-    unit_type: Optional[int] = None  # the actual foreign key value from the table
-    unit_type_details: Optional[UnitTypeRead] = None
-
-
-class AttributeDefinitionUpdate(SQLModel):
-    attribute_name: Optional[str] = None
-    unit_type_id: Optional[int] = None
-    data_type: Optional[str] = None
-    allowed_values: Optional[str] = None
+# =================================================================
+# 3. Location, Supplier, and Inventory Models
+# =================================================================
 
 
 class LocationBase(SQLModel):
-    location_name: str = Field(index=True, unique=True)  # VARCHAR(50) NOT NULL UNIQUE
-    location_description: Optional[str] = None  # VARCHAR(50)
+    location_name: str = Field(index=True, unique=True)
+    location_description: Optional[str] = None
 
 
 class Locations(LocationBase, table=True):
     location_id: Optional[int] = Field(default=None, primary_key=True)
-
     inventory_entries: List["Inventory"] = Relationship(back_populates="location")
     transactions: List["InventoryTransactions"] = Relationship(
         back_populates="location"
     )
 
 
-# reading a location
 class LocationRead(LocationBase):
     location_id: int
 
 
-# creating a new location
-# 'location_name' (required); 'location_description' (optional)
 class LocationCreate(LocationBase):
     pass
 
 
-# updating an existing location (all fields optional)
 class LocationUpdate(SQLModel):
     location_name: Optional[str] = None
     location_description: Optional[str] = None
@@ -138,7 +195,6 @@ class SupplierBase(SQLModel):
 
 class Suppliers(SupplierBase, table=True):
     supplier_id: Optional[int] = Field(default=None, primary_key=True)
-
     transactions: List["InventoryTransactions"] = Relationship(
         back_populates="supplier"
     )
@@ -166,7 +222,6 @@ class InventoryBase(SQLModel):
 
 class Inventory(InventoryBase, table=True):
     inventory_id: Optional[int] = Field(default=None, primary_key=True)
-
     item: "Items" = Relationship(back_populates="inventory_entries")
     location: Optional["Locations"] = Relationship(back_populates="inventory_entries")
 
@@ -189,7 +244,6 @@ class InventoryTransactions(InventoryTransactionsBase, table=True):
     transaction_date: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc)
     )
-
     item: "Items" = Relationship(back_populates="transactions")
     location: Optional["Locations"] = Relationship(back_populates="transactions")
     supplier: Optional["Suppliers"] = Relationship(back_populates="transactions")

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import ItemList from "@/components/ItemList";
 import EditItemModal from "@/components/EditItemModal";
+import EditItemAttributesModal from "@/components/EditItemAttributesModal";
 import * as api from "@/services/api";
 import styles from "./page.module.css";
 
@@ -11,8 +12,14 @@ export default function ViewItemsPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // state for the original edit modal
   const [editingItem, setEditingItem] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // state for the new attributes modal
+  const [itemForAttributes, setItemForAttributes] = useState(null);
+  const [isAttributesModalOpen, setIsAttributesModalOpen] = useState(false);
 
   const loadItems = useCallback(async () => {
     try {
@@ -47,6 +54,7 @@ export default function ViewItemsPage() {
     }
   };
 
+  // Handlers for the original Edit Item modal
   const handleOpenEditModal = (item) => {
     setEditingItem(item);
     setIsEditModalOpen(true);
@@ -55,19 +63,30 @@ export default function ViewItemsPage() {
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
     setEditingItem(null);
+    loadItems();
   };
 
   const handleUpdateItem = async (updatedItemData) => {
     if (!editingItem) return;
     try {
       await api.updateItem(editingItem.item_id, updatedItemData);
-      handleCloseEditModal();
-      await loadItems();
+      handleCloseEditModal(); // this will close and reload
     } catch (err) {
       console.error("Failed to update item:", err);
       setError(new Error("Failed to update item. " + (err.message || "")));
       throw err;
     }
+  };
+
+  const handleOpenAttributesModal = (item) => {
+    setItemForAttributes(item);
+    setIsAttributesModalOpen(true);
+  };
+
+  const handleCloseAttributesModal = () => {
+    setIsAttributesModalOpen(false);
+    setItemForAttributes(null);
+    loadItems();
   };
 
   return (
@@ -92,6 +111,7 @@ export default function ViewItemsPage() {
               error={error}
               onEdit={handleOpenEditModal}
               onDelete={handleDeleteItem}
+              onEditAttributes={handleOpenAttributesModal}
             />
           </div>
         </div>
@@ -102,6 +122,14 @@ export default function ViewItemsPage() {
             isOpen={isEditModalOpen}
             onClose={handleCloseEditModal}
             onSave={handleUpdateItem}
+          />
+        )}
+
+        {isAttributesModalOpen && itemForAttributes && (
+          <EditItemAttributesModal
+            item={itemForAttributes}
+            isOpen={isAttributesModalOpen}
+            onClose={handleCloseAttributesModal}
           />
         )}
       </div>

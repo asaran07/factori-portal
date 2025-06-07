@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from typing import List
 
 from ..db import get_session
-from ..models import Items, ItemRead, ItemCreate, ItemUpdate
+from ..models import Items, ItemRead, ItemCreate, ItemUpdate, ItemReadWithAttributes
 
 router = APIRouter()
 
@@ -19,17 +19,21 @@ async def create_item_endpoint(item: ItemCreate, db: Session = Depends(get_sessi
 
 
 # this gets all items from the database
-@router.get("/", response_model=List[ItemRead])
+@router.get("/", response_model=List[ItemReadWithAttributes])
 async def read_items_endpoint(db: Session = Depends(get_session)):
-    # `statement` is the query object retuned from selecting items.
-    statement = select(Items)  # select(Items) is like doing 'SELECT *'
-    items = db.exec(statement).all()
+    """
+    Retrieve all items, including their assigned attributes.
+    """
+    items = db.exec(select(Items)).all()
     return items
 
 
 # so now if we go to http://localhost:8000/api/v1/items/1 it will return the item with id 1
-@router.get("/{item_id}", response_model=ItemRead)
+@router.get("/{item_id}", response_model=ItemReadWithAttributes)
 async def read_item_by_id(item_id: int, db: Session = Depends(get_session)):
+    """
+    Retrieve a single item by its ID, including its assigned attributes.
+    """
     # first argument is the SQLModel class, second is the primary key value.
     db_item = db.get(Items, item_id)
     if not db_item:
@@ -38,7 +42,7 @@ async def read_item_by_id(item_id: int, db: Session = Depends(get_session)):
 
 
 # PATCH endpoint to update an existing item by its ID
-@router.patch("/{item_id}", response_model=ItemRead)
+@router.patch("/{item_id}", response_model=ItemReadWithAttributes)
 async def update_item_endpoint(
     item_id: int, item_update: ItemUpdate, db: Session = Depends(get_session)
 ):

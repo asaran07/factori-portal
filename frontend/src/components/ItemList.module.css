@@ -107,3 +107,79 @@
   border-radius: 4px;
   padding: 15px;
 }
+
+.listItemWrapper {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.listItemWrapper:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.listItem {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.attributesContainer {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.attributeTag {
+  background-color: #eef4ff;
+  color: #005bb5;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+.noAttributes {
+  font-size: 0.85em;
+  color: #888;
+  font-style: italic;
+}
+
+.attributesButton {
+  background-color: #28a745;
+  color: white;
+}
+
+.attributesButton:hover {
+  background-color: #218838;
+}
+
+.expandedView {
+  border-top: 1px solid #e0e0e0;
+  padding: 16px;
+  background-color: #fcfcfc;
+  display: flex;
+  gap: 20px;
+}
+
+.expandedDetails,
+.expandedMeta {
+  flex: 1;
+}
+
+.expandedView h4 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 1em;
+}
+
+.expandedView ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin: 0;
+}
