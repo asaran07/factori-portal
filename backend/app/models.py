@@ -255,3 +255,10 @@ class InventoryRead(InventoryBase):
 
 class InventoryReadWithLocation(InventoryRead):
     location: Optional[LocationRead] = None
+
+
+class InventoryMoveRequest(SQLModel):
+    item_id: int
+    source_location_id: int
+    destination_location_id: int
+    quantity: float

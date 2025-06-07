@@ -29,6 +29,9 @@ export default function ManageItemsPage() {
             <SimpleMenuButton href="/manage-items/add">
               Add New Item
             </SimpleMenuButton>
+            <SimpleMenuButton href="/move-inventory">
+              Move Inventory
+            </SimpleMenuButton>
           </div>
         </div>
       </div>

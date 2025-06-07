@@ -294,3 +294,19 @@ export const getUnitDefinitions = () => {
 export const getInventoryByItemId = (itemId) => {
   return request(`/inventory/item/${itemId}`);
 };
+
+/**
+ * Executes an inventory move transaction.
+ * @param {object} moveData - The data for the move.
+ * @param {number} moveData.item_id - The ID of the item to move.
+ * @param {number} moveData.source_location_id - The ID of the source location.
+ * @param {number} moveData.destination_location_id - The ID of the destination location.
+ * @param {number} moveData.quantity - The quantity to move.
+ * @returns {Promise<object>} - A promise that resolves to the success message from the API.
+ */
+export const moveInventory = (moveData) => {
+  return request("/transactions/move-inventory", {
+    method: "POST",
+    body: JSON.stringify(moveData),
+  });
+};

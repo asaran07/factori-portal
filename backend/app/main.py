@@ -9,6 +9,7 @@ from .routers import (
     item_attributes,
     unit_definitions,
     inventory,
+    transactions,
 )
 
 app = FastAPI(title="FactoriPortal API")
@@ -50,6 +51,9 @@ app.include_router(
     tags=["Unit Definitions"],
 )
 app.include_router(inventory.router, prefix="/api/v1/inventory", tags=["Inventory"])
+app.include_router(
+    transactions.router, prefix="/api/v1/transactions", tags=["Transactions"]
+)
 
 
 # the decorator tells FastAPI that when an HTTP GET request comes in for
