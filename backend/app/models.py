@@ -247,3 +247,11 @@ class InventoryTransactions(InventoryTransactionsBase, table=True):
     item: "Items" = Relationship(back_populates="transactions")
     location: Optional["Locations"] = Relationship(back_populates="transactions")
     supplier: Optional["Suppliers"] = Relationship(back_populates="transactions")
+
+
+class InventoryRead(InventoryBase):
+    inventory_id: int
+
+
+class InventoryReadWithLocation(InventoryRead):
+    location: Optional[LocationRead] = None

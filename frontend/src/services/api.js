@@ -285,3 +285,12 @@ export const deleteItemAttribute = (attributeId) => {
 export const getUnitDefinitions = () => {
   return request("/unit-definitions");
 };
+
+/**
+ * Fetches inventory data for a specific item by its ID.
+ * @param {number|string} itemId - The ID of the item.
+ * @returns {Promise<Array<object>>} - A promise that resolves to an array of inventory entries.
+ */
+export const getInventoryByItemId = (itemId) => {
+  return request(`/inventory/item/${itemId}`);
+};
