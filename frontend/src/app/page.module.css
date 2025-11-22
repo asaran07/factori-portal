@@ -1,0 +1,15 @@
+.dashboardContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 40px 20px;
+}
+
+.dashboardTitle {
+  font-size: 2.5em;
+  color: #333;
+  margin: 0;
+  text-align: center;
+  font-weight: 600;
+}

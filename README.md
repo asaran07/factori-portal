@@ -1,3 +1,5 @@
+# PLEASE READ THE "SETUP_GUIDE.txt" FILE FOR THE SETUP GUIDE
+
 # Working with the repository
 
 ## pre-commit setup

@@ -16,3 +16,11 @@ body {
   min-height: 100vh;
   box-sizing: border-box;
 }
+
+.main-title {
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
