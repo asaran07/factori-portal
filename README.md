@@ -1,4 +1,7 @@
-# PLEASE READ THE "SETUP_GUIDE.txt" FILE FOR THE SETUP GUIDE
+# Factori Portal
+https://github.com/user-attachments/assets/cd59fe2e-4823-4ed9-8bd0-cee1e3bdfee4
+
+## PLEASE READ THE "SETUP_GUIDE.txt" FILE FOR THE SETUP GUIDE
 
 # Working with the repository
 
